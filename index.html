@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruang BK Digital - SMPN 2 Belawang</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root { --primary: #0d9488; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 40px; }
+    header { background: linear-gradient(135deg, #0d9488, #0284c7); color: white; padding: 35px 20px; text-align: center; border-radius: 0 0 20px 20px; }
+    .container { max-width: 550px; margin: -20px auto 0; padding: 0 16px; }
+    .card { background: var(--card); border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+    .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 14px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; }
+    input[type="text"], select, textarea { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; outline: none; }
+    .radio-group { display: flex; gap: 12px; }
+    .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-share { background: #e0f2fe; color: #0369a1; margin-top: 10px; }
+    .qr-box { text-align: center; margin: 10px 0; }
+    .qr-box img { max-width: 140px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><i class="fa-solid fa-graduation-cap"></i> Ruang BK Digital</h1>
+    <p>SMPN 2 Belawang - Tempat Aman & Rahasia Bertumbuh bersama Guru BK</p>
+  </header>
+  <div class="container">
+    <div class="card">
+      <div class="card-title"><i class="fa-solid fa-paper-plane"></i> Kotak Curhat Online</div>
+      <form id="curhatForm">
+        <div class="form-group">
+          <label>Identitas</label>
+          <div class="radio-group">
+            <label><input type="radio" name="identitas" value="Nama Asli" checked onclick="toggleNama(true)"> Nama Asli</label>
+            <label><input type="radio" name="identitas" value="Anonim" onclick="toggleNama(false)"> Anonim</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="nama">Nama Kamu</label>
+          <input type="text" id="nama" placeholder="Ketik nama lengkap..." required>
+        </div>
+        <div class="form-group">
+          <label for="kelas">Kelas</label>
+          <select id="kelas" required>
+            <option value="">-- Pilih Kelas --</option>
+            <option value="Kelas 7">Kelas 7</option>
+            <option value="Kelas 8">Kelas 8</option>
+            <option value="Kelas 9">Kelas 9</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="kategori">Kategori Masalah</label>
+          <select id="kategori" required>
+            <option value="">-- Pilih Kategori --</option>
+            <option value="Masalah Belajar">Masalah Belajar / Tugas</option>
+            <option value="Masalah Pertemanan">Masalah Pertemanan</option>
+            <option value="Masalah Keluarga">Masalah Keluarga</option>
+            <option value="Pilihan Karir">Bingung Pilih SMA/SMK</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="cerita">Cerita Kamu</label>
+          <textarea id="cerita" rows="4" placeholder="Tuliskan keluh kesahmu di sini..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="wa">Nomor WhatsApp (Opsional)</label>
+          <input type="text" id="wa" placeholder="Contoh: 08123456789">
+        </div>
+        <button type="submit" class="btn btn-primary" id="btnSubmit">
+          <i class="fa-solid fa-paper-plane"></i> Kirim Cerita Saya
+        </button>
+      </form>
+    </div>
+    <div class="card">
+      <div class="card-title"><i class="fa-solid fa-qrcode"></i> Bagikan Link & QR Code</div>
+      <div class="qr-box">
+        <img id="qrImage" src="" alt="QR Code">
+      </div>
+      <button class="btn btn-share" onclick="shareWeb()">
+        <i class="fa-solid fa-share-nodes"></i> Bagikan / Salin Link Web
+      </button>
+    </div>
+  </div>
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby1N6ujJvhRFXGjBFOoSv2E8HYaDbhSCrQu4mBaCRXVCHiBK7AeV86u3w0_91N2gREm/exec";
+
+    function toggleNama(isReal) {
+      const nama = document.getElementById('nama');
+      nama.value = isReal ? "" : "Siswa Anonim";
+      nama.readOnly = !isReal;
+    }
+
+    window.onload = function() {
+      const url = encodeURIComponent(window.location.href);
+      document.getElementById('qrImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${url}`;
+    };
+
+    function shareWeb() {
+      if (navigator.share) {
+        navigator.share({ title: 'Ruang BK Digital', url: window.location.href });
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert('Link berhasil disalin!');
+      }
+    }
+
+    document.getElementById('curhatForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmit');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
+
+      const payload = {
+        opsiIdentitas: document.querySelector('input[name="identitas"]:checked').value,
+        nama: document.getElementById('nama').value,
+        kelas: document.getElementById('kelas').value,
+        kategori: document.getElementById('kategori').value,
+        cerita: document.getElementById('cerita').value,
+        wa: document.getElementById('wa').value
+      };
+
+      fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
+      .then(res => res.json())
+      .then(data => {
+        alert('✅ Ceritamu berhasil dikirim!');
+        document.getElementById('curhatForm').reset();
+        toggleNama(true);
+      })
+      .catch(() => alert('❌ Gagal mengirim, periksa koneksi internet.'))
+      .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Cerita Saya';
+      });
+    });
+  </script>
+</body>
+</html>
